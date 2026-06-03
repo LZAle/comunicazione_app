@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import 'dizionario.dart';
 
 void main() async {
@@ -11,14 +12,13 @@ void main() async {
 
 class ComunicazioneApp extends StatelessWidget {
   const ComunicazioneApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Comunicazione',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF7F77DD)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2D7DD2)),
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
@@ -27,7 +27,15 @@ class ComunicazioneApp extends StatelessWidget {
   }
 }
 
-// ─── DATI ───────────────────────────────────────────────────────────────────
+const Color kBg = Color(0xFFEDF1F7);
+const Color kNavBg = Color(0xFFEDF1F7);
+const Color kExtraBg = Color(0xFFF7F4EE);
+const Color kExtraBorder = Color(0xFFE0D9CC);
+const Color kCard = Colors.white;
+const Color kBorder = Color(0xFFCDD5E0);
+const Color kTextMuted = Color(0xFF7A8899);
+const Color kTextMain = Color(0xFF1A2744);
+const Color kAccent = Color(0xFF2D7DD2);
 
 const Map<String, List<String>> baseWords = {
   'soggetto': [
@@ -40,64 +48,146 @@ const Map<String, List<String>> baseWords = {
     'Tutti',
     'Quello',
     'Quella',
+    'Qualcuno',
+    'Nessuno',
+    'Ognuno',
+    'Mio figlio',
+    'Mia figlia',
+    'Mia moglie',
+    'Mio marito',
+    'Il dottore',
+    'L\'infermiera',
+    'La famiglia',
   ],
   'verbo': [
     'voglio',
-    'ho bisogno di',
-    'sento',
-    'sto',
-    'posso',
-    'devo',
     'vorrei',
-    'non voglio',
+    'ho bisogno di',
+    'ho',
+    'non ho',
+    'sento',
+    'non sento',
+    'sto',
+    'non sto bene',
+    'mi fa male',
+    'posso',
+    'non posso',
+    'devo',
+    'non devo',
+    'riesco',
     'non riesco',
     'capisco',
     'non capisco',
     'chiedo',
     'aspetto',
+    'vado',
+    'vengo',
+    'mangio',
+    'bevo',
+    'dormo',
+    'mi sveglio',
+    'mi alzo',
+    'mi siedo',
+    'chiamo',
+    'ringrazio',
+    'preferisco',
+    'ricordo',
+    'penso',
   ],
   'complemento': [
     'acqua',
+    'caffè',
+    'tè',
+    'succo',
     'cibo',
+    'qualcosa da mangiare',
     'medicine',
+    'il dottore',
+    'l\'infermiera',
     'aiuto',
     'il bagno',
     'a casa',
-    'il dottore',
     'la famiglia',
     'il telefono',
     'riposare',
+    'dormire',
     'uscire',
     'compagnia',
+    'silenzio',
+    'musica',
+    'la televisione',
+    'un libro',
+    'il giornale',
+    'qualcosa di caldo',
+    'qualcosa di freddo',
+    'una coperta',
+    'un cuscino',
   ],
   'aggettivo': [
     'stanco',
+    'riposato',
     'meglio',
+    'peggio',
+    'bene',
     'male',
     'felice',
     'triste',
     'preoccupato',
+    'tranquillo',
+    'agitato',
     'confuso',
+    'lucido',
     'solo',
     'pronto',
+    'occupato',
     'urgente',
-    'difficile',
     'importante',
+    'difficile',
+    'facile',
+    'caldo',
+    'freddo',
+    'dolorante',
+    'a disagio',
+    'comodo',
+    'affamato',
+    'assetato',
+    'assonnato',
+    'annoiato',
+    'contento',
   ],
   'avverbio': [
+    'sì',
+    'no',
+    'non',
+    'forse',
+    'non lo so',
     'adesso',
     'subito',
     'dopo',
+    'più tardi',
     'domani',
+    'oggi',
     'sempre',
     'mai',
+    'spesso',
+    'a volte',
     'ancora',
+    'già',
     'molto',
+    'poco',
+    'abbastanza',
+    'troppo',
+    'qui',
+    'là',
+    'vicino',
+    'lontano',
     'per favore',
     'grazie',
-    'sì',
-    'no',
-    'forse',
+    'prego',
+    'scusa',
+    'piano',
+    'forte',
+    'lentamente',
   ],
 };
 
@@ -112,6 +202,11 @@ const List<String> baseFrasi = [
   'Puoi restare con me?',
   'Puoi ripetere più lentamente?',
   'Ho bisogno del medico',
+  'Ho freddo, mi serve una coperta',
+  'Ho caldo',
+  'Non ho appetito',
+  'Vorrei un po\' di compagnia',
+  'Sto meglio, grazie',
 ];
 
 const Map<String, Map<String, dynamic>> categorie = {
@@ -272,7 +367,7 @@ const Map<String, Map<String, dynamic>> categorie = {
     ],
   },
   'salute': {
-    'label': 'Corpo e salute',
+    'label': 'Salute',
     'icon': Icons.medical_services,
     'parole': [
       'testa',
@@ -479,32 +574,6 @@ const Map<String, Map<String, dynamic>> categorie = {
       'mestiere',
     ],
   },
-  'scuola': {
-    'label': 'Scuola',
-    'icon': Icons.school_outlined,
-    'parole': [
-      'lezione',
-      'compiti',
-      'libro',
-      'quaderno',
-      'penna',
-      'matita',
-      'zaino',
-      'classe',
-      'insegnante',
-      'voto',
-      'esame',
-      'interrogazione',
-      'ricreazione',
-      'mensa',
-      'gita',
-      'diploma',
-      'università',
-      'studio',
-      'ricerca',
-      'biblioteca',
-    ],
-  },
   'vestiti': {
     'label': 'Vestiti',
     'icon': Icons.checkroom,
@@ -689,19 +758,17 @@ const Map<String, Map<String, dynamic>> categorie = {
   },
 };
 
-// ─── COLORI CATEGORIE GRAMMATICALI ──────────────────────────────────────────
-
-const Map<String, Color> catColors = {
-  'soggetto': Color(0xFFE6F1FB),
-  'verbo': Color(0xFFEEEDFE),
-  'complemento': Color(0xFFFAEEDA),
-  'aggettivo': Color(0xFFE1F5EE),
-  'avverbio': Color(0xFFFCEBEB),
-  'preferito': Color(0xFFFBEAF0),
-  'categoria': Color(0xFFF1EFE8),
-  'dizionario': Color(0xFFE6F1FB),
+const Map<String, Color> catBg = {
+  'soggetto': Color(0xFFDCEEFD),
+  'verbo': Color(0xFFE5E3FD),
+  'complemento': Color(0xFFFEEDD4),
+  'aggettivo': Color(0xFFD4F0E5),
+  'avverbio': Color(0xFFFFE0E0),
+  'preferito': Color(0xFFFFE0EF),
+  'categoria': Color(0xFFEDEBE3),
+  'dizionario': Color(0xFFDCEEFD),
 };
-const Map<String, Color> catTextColors = {
+const Map<String, Color> catFg = {
   'soggetto': Color(0xFF0C447C),
   'verbo': Color(0xFF3C3489),
   'complemento': Color(0xFF633806),
@@ -711,8 +778,23 @@ const Map<String, Color> catTextColors = {
   'categoria': Color(0xFF444441),
   'dizionario': Color(0xFF0C447C),
 };
-
-// ─── HOME SCREEN ─────────────────────────────────────────────────────────────
+const Map<String, Color> catBorder = {
+  'soggetto': Color(0xFF9AC6EF),
+  'verbo': Color(0xFFABA6E9),
+  'complemento': Color(0xFFEFBA7A),
+  'aggettivo': Color(0xFF7DD4B0),
+  'avverbio': Color(0xFFEFA0A0),
+  'preferito': Color(0xFFEFA0C0),
+  'categoria': Color(0xFFCCC9BE),
+  'dizionario': Color(0xFF9AC6EF),
+};
+const Map<String, String> CLS = {
+  'soggetto': 'soggetto',
+  'verbo': 'verbo',
+  'complemento': 'complemento',
+  'aggettivo': 'aggettivo',
+  'avverbio': 'avverbio',
+};
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -721,35 +803,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Frase costruita
   List<Map<String, String>> frase = [];
+  String mainTab = 'soggetto';
+  String? sidePanel;
+  String? catAperta;
 
-  // Schermata corrente
-  String mainTab =
-      'soggetto'; // soggetto | verbo | complemento | aggettivo | avverbio | frasi
-  String? sidePanel; // null | pref | cat | diz
-  String? catAperta; // id categoria aperta
-
-  // Dati persistenti
   Map<String, List<String>> extraWords = {};
   Map<String, List<String>> extraCatWords = {};
+  Map<String, List<String>> wordOrder = {}; // ordine completo per ogni tab
   List<String> frasi = [...baseFrasi];
   List<String> preferiti = [];
+  List<String> dizTutte = [];
 
-  // Dizionario
-  String dizQuery = '';
-  Map<String, List<String>> dizResults = {};
-  bool dizLoading = false;
+  final TextEditingController _fraseCtrl = TextEditingController();
+  final FocusNode _fraseFocus = FocusNode();
+  bool _editMode = false;
 
   @override
   void initState() {
     super.initState();
     _loadData();
     for (final k in baseWords.keys) extraWords[k] = [];
+    for (final k in baseWords.keys) wordOrder[k] = [];
     for (final k in categorie.keys) extraCatWords[k] = [];
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _cercaDiz('');
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _cercaDiz(''));
+  }
+
+  @override
+  void dispose() {
+    _fraseCtrl.dispose();
+    _fraseFocus.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -757,12 +841,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       preferiti = prefs.getStringList('preferiti') ?? [];
       frasi = prefs.getStringList('frasi') ?? [...baseFrasi];
-      for (final k in baseWords.keys) {
+      for (final k in baseWords.keys)
         extraWords[k] = prefs.getStringList('extra_$k') ?? [];
-      }
-      for (final k in categorie.keys) {
+      for (final k in baseWords.keys)
+        wordOrder[k] = prefs.getStringList('order_$k') ?? [];
+      for (final k in categorie.keys)
         extraCatWords[k] = prefs.getStringList('extracat_$k') ?? [];
-      }
     });
   }
 
@@ -770,33 +854,78 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('preferiti', preferiti);
     await prefs.setStringList('frasi', frasi);
-    for (final k in baseWords.keys) {
+    for (final k in baseWords.keys)
       await prefs.setStringList('extra_$k', extraWords[k] ?? []);
-    }
-    for (final k in categorie.keys) {
+    for (final k in baseWords.keys)
+      await prefs.setStringList('order_$k', wordOrder[k] ?? []);
+    for (final k in categorie.keys)
       await prefs.setStringList('extracat_$k', extraCatWords[k] ?? []);
-    }
   }
+
+  String get _testoFrase => frase.map((w) => w['parola']!).join(' ');
 
   void _addWord(String parola, String cat) {
     final ultima = frase.isNotEmpty ? frase.last['parola'] : null;
     if (parola == ultima) return;
+    if (_editMode) _chiudiEdit();
     setState(() => frase.add({'parola': parola, 'cat': cat}));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() => _fraseCtrl.text = _testoFrase);
+    });
   }
 
-  void _removeWord(int i) => setState(() => frase.removeAt(i));
   void _undo() {
-    if (frase.isNotEmpty) setState(() => frase.removeLast());
+    if (_editMode) _chiudiEdit();
+    if (frase.isNotEmpty)
+      setState(() {
+        frase.removeLast();
+        _fraseCtrl.text = _testoFrase;
+      });
   }
 
-  void _clear() => setState(() => frase.clear());
+  void _clear() {
+    _chiudiEdit();
+    setState(() {
+      frase.clear();
+      _fraseCtrl.clear();
+    });
+  }
+
+  void _attivaEdit() {
+    setState(() {
+      _editMode = true;
+      _fraseCtrl.text = _testoFrase;
+    });
+    _fraseFocus.requestFocus();
+  }
+
+  void _chiudiEdit() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final t = _fraseCtrl.text.trim();
+    setState(() {
+      _editMode = false;
+      if (t.isNotEmpty && t != _testoFrase) {
+        frase = [
+          {'parola': t, 'cat': 'preferito'},
+        ];
+      } else if (t.isEmpty) {
+        frase.clear();
+      }
+      _fraseCtrl.text = _testoFrase;
+    });
+  }
 
   void _mostraGrande() {
-    final testo = frase.map((w) => w['parola']!).join(' ');
+    if (_editMode) _chiudiEdit();
+    final testo = _fraseCtrl.text.trim().isNotEmpty
+        ? _fraseCtrl.text.trim()
+        : _testoFrase;
+    if (testo.isEmpty) return;
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(40),
           child: Column(
@@ -805,15 +934,32 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 testo,
                 style: const TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 44,
+                  fontWeight: FontWeight.w700,
+                  color: kTextMain,
+                  height: 1.3,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Chiudi'),
+              const SizedBox(height: 36),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Chiudi',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                ),
               ),
             ],
           ),
@@ -824,54 +970,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _cercaDiz(String q) {
     final ql = q.toLowerCase();
-    final Map<String, List<String>> res = {
-      'sostantivo': [],
-      'verbo': [],
-      'aggettivo': [],
-      'avverbio': [],
-    };
-    for (final w in dizionarioItaliano) {
-      final parola = w['parola']!;
-      final tipo = w['tipo']!;
-      if (ql.isEmpty || parola.toLowerCase().contains(ql)) {
-        res[tipo]?.add(parola);
-      }
-    }
-    res.forEach(
-      (k, v) => v.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase())),
-    );
-    setState(() {
-      dizResults = res;
-      dizLoading = false;
-    });
+    final List<String> tutte = dizionarioItaliano
+        .map((w) => w['parola']!)
+        .where((p) => ql.isEmpty || p.toLowerCase().contains(ql))
+        .toList();
+    tutte.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    setState(() => dizTutte = tutte);
   }
-
-  // ─── BUILD ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
+    final mq = MediaQuery.of(context);
+    // La scelta si basa sull'altezza disponibile, non sul tipo di dispositivo.
+    // Schermo basso (orizzontale su telefono) -> azioni compatte nella nav.
+    // Schermo alto -> barra azioni grande in fondo.
+    final isShort = mq.size.height < 500;
+
+    return GestureDetector(
+      onTap: () {
+        if (_editMode) _chiudiEdit();
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        backgroundColor: kBg,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
           child: Column(
             children: [
               _buildFraseBar(),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: _buildCenter()),
-                    const SizedBox(width: 10),
-                    _buildSidebar(),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              _buildAzioni(),
+              _buildExtraZone(),
+              _buildNavZone(isShort),
+              Expanded(child: _buildContenuto()),
+              _buildAzioni(isShort),
             ],
           ),
         ),
@@ -879,144 +1009,270 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ─── BARRA FRASE ─────────────────────────────────────────────────────────
-
   Widget _buildFraseBar() {
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 56),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black12),
-      ),
-      child: frase.isEmpty
-          ? const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'La frase apparirà qui...',
-                style: TextStyle(color: Colors.black38, fontSize: 15),
+    return GestureDetector(
+      onTap: _attivaEdit,
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 80),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          color: kCard,
+          border: Border(bottom: BorderSide(color: kBorder)),
+        ),
+        child: _editMode
+            ? TextField(
+                controller: _fraseCtrl,
+                focusNode: _fraseFocus,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: kTextMain,
+                  height: 1.4,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Scrivi qui...',
+                  hintStyle: TextStyle(
+                    color: kTextMuted,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                maxLines: null,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _chiudiEdit(),
+              )
+            : frase.isEmpty
+            ? const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Tocca per scrivere, o scegli le parole sotto.',
+                  style: TextStyle(color: kTextMuted, fontSize: 17),
+                ),
+              )
+            : Text(
+                _testoFrase,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: kTextMain,
+                  height: 1.4,
+                ),
               ),
+      ),
+    );
+  }
+
+  Widget _buildExtraZone() {
+    return Container(
+      color: kExtraBg,
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      child: Row(
+        children: [
+          _extraBtn(
+            'pref',
+            Icons.star_rounded,
+            'Preferiti',
+            const Color(0xFFFFF0F6),
+            const Color(0xFF72243E),
+            const Color(0xFFEFA0C0),
+          ),
+          const SizedBox(width: 8),
+          _extraBtn(
+            'cat',
+            Icons.grid_view_rounded,
+            'Categorie',
+            const Color(0xFFFFF8EE),
+            const Color(0xFF633806),
+            const Color(0xFFEFBA7A),
+          ),
+          const SizedBox(width: 8),
+          _extraBtn(
+            'diz',
+            Icons.menu_book_rounded,
+            'Dizionario',
+            const Color(0xFFEEF5FD),
+            const Color(0xFF0C447C),
+            const Color(0xFF9AC6EF),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _extraBtn(
+    String id,
+    IconData icon,
+    String label,
+    Color bg,
+    Color fg,
+    Color border,
+  ) {
+    final active = sidePanel == id;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() {
+          sidePanel = active ? null : id;
+          catAperta = null;
+        }),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: active ? bg : kCard,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: active ? border : kBorder),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 22, color: active ? fg : kTextMuted),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: active ? fg : kTextMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Nav zone: su tablet le azioni stanno qui affianco a Frasi
+  Widget _buildNavZone(bool isShort) {
+    final tabs = [
+      ('soggetto', 'Soggetto'),
+      ('verbo', 'Verbo'),
+      ('complemento', 'Complemento'),
+      ('aggettivo', 'Aggettivo'),
+      ('avverbio', 'Avverbio'),
+    ];
+
+    final tabWidgets = tabs.map((t) {
+      final isActive = sidePanel == null && mainTab == t.$1;
+      return GestureDetector(
+        key: ValueKey(t.$1),
+        onTap: () => setState(() {
+          mainTab = t.$1;
+          sidePanel = null;
+          catAperta = null;
+        }),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          decoration: BoxDecoration(
+            color: isActive ? (catBg[t.$1] ?? kCard) : kCard,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: isActive ? (catBorder[t.$1] ?? kAccent) : kBorder,
+            ),
+          ),
+          child: Text(
+            t.$2,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: isActive ? (catFg[t.$1] ?? kAccent) : kTextMuted,
+            ),
+          ),
+        ),
+      );
+    }).toList();
+
+    // Tab "Frasi"
+    final frasiActive = sidePanel == null && mainTab == 'frasi';
+    final frasiTab = GestureDetector(
+      onTap: () => setState(() {
+        mainTab = 'frasi';
+        sidePanel = null;
+        catAperta = null;
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: frasiActive ? const Color(0xFFEDEBE3) : kCard,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(
+            color: frasiActive ? const Color(0xFFCCC9BE) : kBorder,
+          ),
+        ),
+        child: Text(
+          'Frasi',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: frasiActive ? const Color(0xFF444441) : kTextMuted,
+          ),
+        ),
+      ),
+    );
+
+    // Schermo basso -> icone azioni compatte affianco a Frasi
+    final showCompact = isShort;
+
+    return Container(
+      color: kNavBg,
+      padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
+      child: showCompact
+          ? Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final w in tabWidgets) ...[
+                          w,
+                          const SizedBox(width: 6),
+                        ],
+                        frasiTab,
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _azioneIcona(Icons.undo_rounded, _undo),
+                const SizedBox(width: 6),
+                _azioneIcona(Icons.close_rounded, _clear),
+                const SizedBox(width: 6),
+                _azioneIcona(
+                  Icons.visibility_rounded,
+                  _mostraGrande,
+                  accent: true,
+                ),
+              ],
             )
           : Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: frase.asMap().entries.map((e) {
-                final i = e.key;
-                final w = e.value;
-                final cat = w['cat']!;
-                return GestureDetector(
-                  onTap: () => _removeWord(i),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: catColors[cat] ?? const Color(0xFFF1EFE8),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          w['parola']!,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: catTextColors[cat] ?? Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.close,
-                          size: 12,
-                          color: (catTextColors[cat] ?? Colors.black87)
-                              .withOpacity(0.5),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
+              children: [...tabWidgets, frasiTab],
             ),
     );
   }
 
-  // ─── CENTRO ──────────────────────────────────────────────────────────────
-
-  Widget _buildCenter() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTopNav(),
-        const SizedBox(height: 6),
-        Expanded(child: _buildContenuto()),
-      ],
-    );
-  }
-
-  Widget _buildTopNav() {
-    final tabs = [
-      'soggetto',
-      'verbo',
-      'complemento',
-      'aggettivo',
-      'avverbio',
-      'frasi',
-    ];
-    final labels = {
-      'soggetto': 'Soggetto',
-      'verbo': 'Verbo',
-      'complemento': 'Complemento',
-      'aggettivo': 'Aggettivo',
-      'avverbio': 'Avverbio',
-      'frasi': 'Frasi prefatte',
-    };
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: tabs.map((t) {
-          final isActive = sidePanel == null && mainTab == t;
-          return Padding(
-            padding: const EdgeInsets.only(right: 6),
-            child: GestureDetector(
-              onTap: () => setState(() {
-                mainTab = t;
-                sidePanel = null;
-                catAperta = null;
-              }),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? (catColors[t] ?? const Color(0xFFEAF3DE))
-                      : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isActive
-                        ? (catTextColors[t] ?? Colors.green).withOpacity(0.4)
-                        : Colors.black12,
-                  ),
-                ),
-                child: Text(
-                  labels[t]!,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isActive
-                        ? (catTextColors[t] ?? const Color(0xFF27500A))
-                        : Colors.black54,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
+  Widget _azioneIcona(
+    IconData icon,
+    VoidCallback onTap, {
+    bool accent = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: accent ? kAccent : kCard,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: accent ? kAccent : kBorder),
+        ),
+        child: Icon(icon, size: 20, color: accent ? Colors.white : kTextMuted),
       ),
     );
   }
@@ -1030,57 +1286,87 @@ class _HomeScreenState extends State<HomeScreen> {
     return _buildParole(mainTab);
   }
 
-  // ─── GRIGLIA PAROLE ───────────────────────────────────────────────────────
-
   Widget _buildParole(String cat) {
     final base = baseWords[cat] ?? [];
     final extra = extraWords[cat] ?? [];
-    final all = [...base, ...extra];
+    // Se esiste un ordine salvato e contiene tutte le parole, usalo
+    // altrimenti usa base + extra
+    final savedOrder = wordOrder[cat] ?? [];
+    final allParole = [...base, ...extra];
+    List<String> all;
+    if (savedOrder.isNotEmpty &&
+        savedOrder.length == allParole.length &&
+        savedOrder.toSet().containsAll(allParole.toSet())) {
+      all = savedOrder;
+    } else {
+      all = allParole;
+    }
+
     final ultima = frase.isNotEmpty ? frase.last['parola'] : null;
     final cls = CLS[cat] ?? 'soggetto';
 
-    return SingleChildScrollView(
-      child: Wrap(
-        spacing: 7,
-        runSpacing: 7,
-        children: [
-          ...all.asMap().entries.map((e) {
-            final i = e.key;
-            final p = e.value;
-            final isBase = i < base.length;
-            final disabled = p == ultima;
-            return _wordChip(
-              label: p,
-              cat: cls,
-              disabled: disabled,
-              canDelete: !isBase,
-              onTap: () => _addWord(p, cls),
-              onDelete: () {
-                setState(() {
-                  extraWords[cat]!.removeAt(i - base.length);
-                });
-                _save();
-              },
-            );
-          }),
-          _addChip(
+    return ReorderableGridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 180,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        mainAxisExtent: 52,
+      ),
+      itemCount: all.length + 1,
+      onReorder: (oldIndex, newIndex) {
+        if (oldIndex >= all.length || newIndex > all.length) return;
+        if (newIndex > oldIndex) newIndex--;
+        setState(() {
+          final newOrder = [...all];
+          final item = newOrder.removeAt(oldIndex);
+          newOrder.insert(newIndex, item);
+          wordOrder[cat] = newOrder;
+          // Aggiorna anche extraWords in base al nuovo ordine
+          extraWords[cat] = newOrder.where((p) => !base.contains(p)).toList();
+        });
+        _save();
+      },
+      itemBuilder: (context, i) {
+        if (i == all.length) {
+          return _addChip(
+            key: const ValueKey('__add__'),
             onAdd: (v) {
-              setState(() => extraWords[cat]!.add(v));
+              setState(() {
+                extraWords[cat]!.add(v);
+                wordOrder[cat] = [...all, v];
+              });
               _save();
             },
-          ),
-        ],
-      ),
+          );
+        }
+        final p = all[i];
+        final isBase = base.contains(p);
+        return _wordChip(
+          key: ValueKey('$cat\_$i\_$p'),
+          label: p,
+          cat: cls,
+          disabled: p == ultima,
+          canDelete: !isBase,
+          onTap: () => _addWord(p, cls),
+          onDelete: () {
+            setState(() {
+              extraWords[cat]!.remove(p);
+              wordOrder[cat] = [...all]..remove(p);
+            });
+            _save();
+          },
+        );
+      },
     );
   }
-
-  // ─── FRASI PREFATTE ───────────────────────────────────────────────────────
 
   Widget _buildFrasi() {
     return Column(
       children: [
         Expanded(
           child: ReorderableListView(
+            padding: const EdgeInsets.all(10),
             onReorder: (o, n) {
               setState(() {
                 if (n > o) n--;
@@ -1092,60 +1378,70 @@ class _HomeScreenState extends State<HomeScreen> {
             children: frasi.asMap().entries.map((e) {
               final i = e.key;
               final f = e.value;
-              return ListTile(
+              return Container(
                 key: ValueKey(f + i.toString()),
-                tileColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: kCard,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: kBorder),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 2,
-                ),
-                title: Text(
-                  f,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ),
-                leading: const Icon(Icons.drag_handle, color: Colors.black26),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    size: 18,
-                    color: Colors.black38,
+                  title: Text(
+                    f,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: kTextMain,
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() => frasi.removeAt(i));
-                    _save();
+                  leading: const Icon(
+                    Icons.drag_handle,
+                    color: kTextMuted,
+                    size: 26,
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      size: 24,
+                      color: kTextMuted,
+                    ),
+                    onPressed: () {
+                      setState(() => frasi.removeAt(i));
+                      _save();
+                    },
+                  ),
+                  onTap: () {
+                    if (_editMode) _chiudiEdit();
+                    setState(() {
+                      frase = [
+                        {'parola': f, 'cat': 'preferito'},
+                      ];
+                      _fraseCtrl.text = f;
+                    });
                   },
                 ),
-                onTap: () => setState(() {
-                  frase = [
-                    {'parola': f, 'cat': 'preferito'},
-                  ];
-                }),
               );
             }).toList(),
           ),
         ),
-        const SizedBox(height: 8),
-        _addRow(
-          hint: 'Nuova frase prefatta...',
-          onAdd: (v) {
-            setState(() => frasi.add(v));
-            _save();
-          },
-          color: const Color(0xFF27500A),
-          bg: const Color(0xFFEAF3DE),
-          border: const Color(0xFF97C459),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+          child: _addRow(
+            hint: 'Nuova frase prefatta...',
+            onAdd: (v) {
+              setState(() => frasi.add(v));
+              _save();
+            },
+          ),
         ),
       ],
     );
   }
-
-  // ─── PREFERITI ────────────────────────────────────────────────────────────
 
   Widget _buildPreferiti() {
     final ultima = frase.isNotEmpty ? frase.last['parola'] : null;
@@ -1155,11 +1451,12 @@ class _HomeScreenState extends State<HomeScreen> {
           child: preferiti.isEmpty
               ? const Center(
                   child: Text(
-                    'Nessun preferito. Aggiungine uno.',
-                    style: TextStyle(color: Colors.black38),
+                    'Nessun preferito ancora.',
+                    style: TextStyle(color: kTextMuted, fontSize: 17),
                   ),
                 )
               : ReorderableListView(
+                  padding: const EdgeInsets.all(10),
                   onReorder: (o, n) {
                     setState(() {
                       if (n > o) n--;
@@ -1171,68 +1468,72 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: preferiti.asMap().entries.map((e) {
                     final i = e.key;
                     final p = e.value;
-                    return ListTile(
+                    return Container(
                       key: ValueKey(p + i.toString()),
-                      tileColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        color: kCard,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: kBorder),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 2,
-                      ),
-                      title: Text(
-                        p,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                      ),
-                      leading: const Icon(
-                        Icons.drag_handle,
-                        color: Colors.black26,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          size: 18,
-                          color: Colors.black38,
+                        title: Text(
+                          p,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: kTextMain,
+                          ),
                         ),
-                        onPressed: () {
-                          setState(() => preferiti.removeAt(i));
-                          _save();
-                        },
+                        leading: const Icon(
+                          Icons.drag_handle,
+                          color: kTextMuted,
+                          size: 26,
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            size: 24,
+                            color: kTextMuted,
+                          ),
+                          onPressed: () {
+                            setState(() => preferiti.removeAt(i));
+                            _save();
+                          },
+                        ),
+                        onTap: p == ultima
+                            ? null
+                            : () => _addWord(p, 'preferito'),
                       ),
-                      onTap: p == ultima
-                          ? null
-                          : () => _addWord(p, 'preferito'),
                     );
                   }).toList(),
                 ),
         ),
-        const SizedBox(height: 8),
-        _addRow(
-          hint: 'Aggiungi parola o frase...',
-          onAdd: (v) {
-            setState(() => preferiti.add(v));
-            _save();
-          },
-          color: const Color(0xFF72243E),
-          bg: const Color(0xFFFBEAF0),
-          border: const Color(0xFFED93B1),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+          child: _addRow(
+            hint: 'Aggiungi parola o frase...',
+            onAdd: (v) {
+              setState(() => preferiti.add(v));
+              _save();
+            },
+          ),
         ),
       ],
     );
   }
 
-  // ─── CATEGORIE ────────────────────────────────────────────────────────────
-
   Widget _buildCatGrid() {
     return GridView.count(
+      padding: const EdgeInsets.all(12),
       crossAxisCount: 3,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.2,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1.05,
       children: categorie.entries.map((e) {
         final id = e.key;
         final data = e.value;
@@ -1240,24 +1541,39 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () => setState(() => catAperta = id),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.black12),
+              color: kCard,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: kBorder),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(data['icon'] as IconData, size: 26, color: Colors.black54),
-                const SizedBox(height: 6),
-                Text(
-                  data['label'] as String,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kBg,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                  child: Icon(
+                    data['icon'] as IconData,
+                    size: 28,
+                    color: kAccent,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Text(
+                    data['label'] as String,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: kTextMain,
+                    ),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
                 ),
               ],
             ),
@@ -1273,329 +1589,293 @@ class _HomeScreenState extends State<HomeScreen> {
     final extra = extraCatWords[catAperta!] ?? [];
     final all = [...base, ...extra];
     final ultima = frase.isNotEmpty ? frase.last['parola'] : null;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () => setState(() => catAperta = null),
-          child: Row(
-            children: [
-              const Icon(Icons.arrow_back, size: 16, color: Colors.black45),
-              const SizedBox(width: 4),
-              Text(
-                cat['label'] as String,
-                style: const TextStyle(fontSize: 12, color: Colors.black45),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 7,
-              runSpacing: 7,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+          child: GestureDetector(
+            onTap: () => setState(() => catAperta = null),
+            child: Row(
               children: [
-                ...all.asMap().entries.map((e) {
-                  final i = e.key;
-                  final p = e.value;
-                  final isBase = i < base.length;
-                  return _wordChip(
-                    label: p,
-                    cat: 'categoria',
-                    disabled: p == ultima,
-                    canDelete: !isBase,
-                    onTap: () => _addWord(p, 'categoria'),
-                    onDelete: () {
-                      setState(
-                        () => extraCatWords[catAperta!]!.removeAt(
-                          i - base.length,
-                        ),
-                      );
-                      _save();
-                    },
-                  );
-                }),
-                _addChip(
-                  onAdd: (v) {
-                    setState(() => extraCatWords[catAperta!]!.add(v));
-                    _save();
-                  },
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: kCard,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: kBorder),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    size: 18,
+                    color: kTextMuted,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  cat['label'] as String,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: kTextMain,
+                  ),
                 ),
               ],
             ),
           ),
         ),
+        Expanded(
+          child: ReorderableGridView.builder(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 180,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              mainAxisExtent: 52,
+            ),
+            itemCount: all.length + 1,
+            onReorder: (o, n) {
+              if (o >= all.length || n > all.length) return;
+              if (n > o) n--;
+              setState(() {
+                final combined = [...base, ...extraCatWords[catAperta!]!];
+                final item = combined.removeAt(o);
+                combined.insert(n, item);
+                extraCatWords[catAperta!] = combined.sublist(base.length);
+              });
+              _save();
+            },
+            itemBuilder: (context, i) {
+              if (i == all.length) {
+                return _addChip(
+                  key: const ValueKey('__add__'),
+                  onAdd: (v) {
+                    setState(() => extraCatWords[catAperta!]!.add(v));
+                    _save();
+                  },
+                );
+              }
+              final p = all[i];
+              final isBase = i < base.length;
+              return _wordChip(
+                key: ValueKey('cat_$i\_$p'),
+                label: p,
+                cat: 'categoria',
+                disabled: p == ultima,
+                canDelete: !isBase,
+                onTap: () => _addWord(p, 'categoria'),
+                onDelete: () {
+                  setState(
+                    () => extraCatWords[catAperta!]!.removeAt(i - base.length),
+                  );
+                  _save();
+                },
+              );
+            },
+          ),
+        ),
       ],
     );
   }
-
-  // ─── DIZIONARIO ───────────────────────────────────────────────────────────
 
   Widget _buildDizionario() {
-    final tipoLabel = {
-      'sostantivo': 'Sostantivi',
-      'verbo': 'Verbi',
-      'aggettivo': 'Aggettivi',
-      'avverbio': 'Avverbi',
-    };
+    final ultima = frase.isNotEmpty ? frase.last['parola'] : null;
     return Column(
       children: [
-        TextField(
-          decoration: InputDecoration(
-            hintText: 'Cerca una parola',
-            prefixIcon: const Icon(Icons.search, size: 18),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 10,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+          child: Container(
+            decoration: BoxDecoration(
+              color: kCard,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: kBorder),
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.black12),
+            child: TextField(
+              style: const TextStyle(fontSize: 16, color: kTextMain),
+              decoration: const InputDecoration(
+                hintText: 'Cerca una parola...',
+                hintStyle: TextStyle(color: kTextMuted),
+                prefixIcon: Icon(Icons.search, size: 20, color: kTextMuted),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 13),
+              ),
+              onChanged: (v) => _cercaDiz(v),
             ),
-            filled: true,
-            fillColor: Colors.white,
           ),
-          onChanged: (v) {
-            dizQuery = v;
-            _cercaDiz(v);
-          },
         ),
-        const SizedBox(height: 8),
         Expanded(
-          child: ListView(
-            children: tipoLabel.entries.map((e) {
-              final parole = dizResults[e.key] ?? [];
-              if (parole.isEmpty) return const SizedBox.shrink();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15, //grandezza tasti dizionario
-                      vertical: 10,
-                    ),
-                    child: Text(
-                      e.value,
-                      style: const TextStyle(
-                        fontSize: 15, //Grandezza testo dizionario
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black45,
-                      ),
-                    ),
-                  ),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 6,
-                    crossAxisSpacing: 6,
-                    childAspectRatio: 2.5,
-                    children: parole
-                        .map(
-                          (p) => GestureDetector(
-                            onTap: () => _addWord(p, 'dizionario'),
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.black12),
-                              ),
-                              child: Text(
-                                p,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: dizTutte
+                  .map(
+                    (p) => GestureDetector(
+                      onTap: p == ultima
+                          ? null
+                          : () => _addWord(p, 'dizionario'),
+                      child: Opacity(
+                        opacity: p == ultima ? 0.3 : 1.0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 13,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDCEEFD),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: const Color(0xFF9AC6EF).withOpacity(0.6),
                             ),
                           ),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              );
-            }).toList(),
+                          child: Text(
+                            p,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0C447C),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ─── SIDEBAR ─────────────────────────────────────────────────────────────
-
-  Widget _buildSidebar() {
-    return Column(
-      children: [
-        _sideBtn(
-          'pref',
-          Icons.star_border,
-          'Preferiti',
-          const Color(0xFFFBEAF0),
-          const Color(0xFF72243E),
-          const Color(0xFFED93B1),
-        ),
-        const SizedBox(height: 6),
-        _sideBtn(
-          'cat',
-          Icons.grid_view,
-          'Categorie',
-          const Color(0xFFFAEEDA),
-          const Color(0xFF633806),
-          const Color(0xFFEF9F27),
-        ),
-        const SizedBox(height: 6),
-        _sideBtn(
-          'diz',
-          Icons.menu_book_outlined,
-          'Dizionario',
-          const Color(0xFFE6F1FB),
-          const Color(0xFF0C447C),
-          const Color(0xFF85B7EB),
-        ),
-      ],
-    );
-  }
-
-  Widget _sideBtn(
-    String id,
-    IconData icon,
-    String label,
-    Color bg,
-    Color fg,
-    Color border,
-  ) {
-    final active = sidePanel == id;
-    return GestureDetector(
-      onTap: () => setState(() {
-        sidePanel = active ? null : id;
-        catAperta = null;
-      }),
-      child: Container(
-        width: 80,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: active ? bg : Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: active ? border : Colors.black12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 22, color: active ? fg : Colors.black45),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: active ? fg : Colors.black45,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildAzioni(bool isShort) {
+    // Schermo basso: le icone sono già nella nav, niente barra in fondo
+    if (isShort) return const SizedBox.shrink();
+    // Portrait: barra azioni in fondo grande
+    final hasTesto =
+        frase.isNotEmpty || (_editMode && _fraseCtrl.text.trim().isNotEmpty);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+      decoration: BoxDecoration(
+        color: kCard,
+        border: Border(top: BorderSide(color: kBorder)),
       ),
-    );
-  }
-
-  // ─── AZIONI ──────────────────────────────────────────────────────────────
-
-  Widget _buildAzioni() {
-    return Row(
-      children: [
-        _actionBtn(Icons.undo, onTap: _undo),
-        const SizedBox(width: 7),
-        Expanded(
-          child: _actionBtn(Icons.close, label: 'Cancella', onTap: _clear),
-        ),
-        const SizedBox(width: 7),
-        Expanded(
-          flex: 2,
-          child: GestureDetector(
-            onTap: frase.isEmpty ? null : _mostraGrande,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 11),
-              decoration: BoxDecoration(
-                color: frase.isEmpty
-                    ? const Color(0xFFEEEDFE).withOpacity(0.5)
-                    : const Color(0xFFEEEDFE),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFAFA9EC)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.visibility_outlined,
-                    size: 18,
-                    color: Color(0xFF3C3489),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Mostra grande',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: frase.isEmpty
-                          ? const Color(0xFF3C3489).withOpacity(0.4)
-                          : const Color(0xFF3C3489),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _undo,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    decoration: BoxDecoration(
+                      color: kBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: kBorder),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.undo_rounded, size: 18, color: kTextMuted),
+                        SizedBox(width: 6),
+                        Text(
+                          'Annulla',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: kTextMuted,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _actionBtn(
-    IconData icon, {
-    String? label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 11,
-          horizontal: label != null ? 12 : 14,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 18, color: Colors.black54),
-            if (label != null) ...[
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black54,
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _clear,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    decoration: BoxDecoration(
+                      color: kBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: kBorder),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.close_rounded, size: 18, color: kTextMuted),
+                        SizedBox(width: 6),
+                        Text(
+                          'Cancella',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: kTextMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: hasTesto ? _mostraGrande : null,
+            child: AnimatedOpacity(
+              opacity: hasTesto ? 1.0 : 0.38,
+              duration: const Duration(milliseconds: 200),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: kAccent,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: hasTesto
+                      ? [
+                          BoxShadow(
+                            color: kAccent.withOpacity(0.35),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                      : [],
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.visibility_rounded,
+                      size: 22,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Mostra grande',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // ─── WIDGET HELPER ───────────────────────────────────────────────────────
-
   Widget _wordChip({
+    required Key key,
     required String label,
     required String cat,
     required bool disabled,
@@ -1604,34 +1884,55 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onDelete,
   }) {
     return GestureDetector(
+      key: key,
       onTap: disabled ? null : onTap,
-      child: Opacity(
-        opacity: disabled ? 0.35 : 1,
+      child: AnimatedOpacity(
+        opacity: disabled ? 0.3 : 1.0,
+        duration: const Duration(milliseconds: 150),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          padding: EdgeInsets.only(
+            left: 14,
+            top: 10,
+            bottom: 10,
+            right: canDelete ? 6 : 14,
+          ),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.black12),
+            color: catBg[cat] ?? const Color(0xFFEDEBE3),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: (catBorder[cat] ?? Colors.grey).withOpacity(0.6),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: catFg[cat] ?? kTextMain,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (canDelete) ...[
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
                 GestureDetector(
                   onTap: onDelete,
-                  child: const Icon(
-                    Icons.close,
-                    size: 11,
-                    color: Colors.black38,
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: (catFg[cat] ?? kTextMain).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      size: 16,
+                      color: (catFg[cat] ?? kTextMain).withOpacity(0.7),
+                    ),
                   ),
                 ),
               ],
@@ -1642,17 +1943,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _addChip({required Function(String) onAdd}) {
+  Widget _addChip({required Key key, required Function(String) onAdd}) {
     return GestureDetector(
+      key: key,
       onTap: () => _showAddDialog(onAdd),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.black26, style: BorderStyle.solid),
+          color: kCard,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: kBorder),
         ),
-        child: const Icon(Icons.add, size: 18, color: Colors.black38),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, size: 20, color: kTextMuted),
+            SizedBox(width: 4),
+            Text(
+              'Aggiungi',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: kTextMuted,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1664,14 +1981,14 @@ class _HomeScreenState extends State<HomeScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => Padding(
         padding: EdgeInsets.only(
           left: 20,
           right: 20,
-          top: 20,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          top: 28,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 28,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1679,15 +1996,28 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text(
               'Aggiungi parola',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: kTextMain,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             TextField(
               controller: ctrl,
               autofocus: true,
-              decoration: const InputDecoration(
+              style: const TextStyle(fontSize: 18, color: kTextMain),
+              decoration: InputDecoration(
                 hintText: 'Scrivi la parola...',
-                border: OutlineInputBorder(),
+                hintStyle: const TextStyle(color: kTextMuted),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: kBorder),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
               onSubmitted: (v) {
                 if (v.trim().isNotEmpty) {
@@ -1696,23 +2026,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Annulla'),
+                  child: const Text(
+                    'Annulla',
+                    style: TextStyle(fontSize: 16, color: kTextMuted),
+                  ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kAccent,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 14,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   onPressed: () {
                     if (ctrl.text.trim().isNotEmpty) {
                       onAdd(ctrl.text.trim());
                       Navigator.pop(ctx);
                     }
                   },
-                  child: const Text('Aggiungi'),
+                  child: const Text(
+                    'Aggiungi',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ],
             ),
@@ -1722,41 +2070,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _addRow({
-    required String hint,
-    required Function(String) onAdd,
-    required Color color,
-    required Color bg,
-    required Color border,
-  }) {
+  Widget _addRow({required String hint, required Function(String) onAdd}) {
     final ctrl = TextEditingController();
     return Row(
       children: [
         Expanded(
-          child: TextField(
-            controller: ctrl,
-            decoration: InputDecoration(
-              hintText: hint,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: border),
-              ),
-              filled: true,
-              fillColor: Colors.white,
+          child: Container(
+            decoration: BoxDecoration(
+              color: kCard,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: kBorder),
             ),
-            onSubmitted: (v) {
-              if (v.trim().isNotEmpty) {
-                onAdd(v.trim());
-                ctrl.clear();
-              }
-            },
+            child: TextField(
+              controller: ctrl,
+              style: const TextStyle(fontSize: 16, color: kTextMain),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: const TextStyle(color: kTextMuted),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+              ),
+              onSubmitted: (v) {
+                if (v.trim().isNotEmpty) {
+                  onAdd(v.trim());
+                  ctrl.clear();
+                }
+              },
+            ),
           ),
         ),
-        const SizedBox(width: 7),
+        const SizedBox(width: 8),
         GestureDetector(
           onTap: () {
             if (ctrl.text.trim().isNotEmpty) {
@@ -1765,24 +2111,16 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
           child: Container(
-            padding: const EdgeInsets.all(11),
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: border),
+              color: kAccent,
+              borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(Icons.add, size: 20, color: color),
+            child: const Icon(Icons.add, size: 24, color: Colors.white),
           ),
         ),
       ],
     );
   }
 }
-
-const Map<String, String> CLS = {
-  'soggetto': 'soggetto',
-  'verbo': 'verbo',
-  'complemento': 'complemento',
-  'aggettivo': 'aggettivo',
-  'avverbio': 'avverbio',
-};
